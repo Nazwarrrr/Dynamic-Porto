@@ -14,8 +14,8 @@ class ExampleTest extends TestCase
     {
         Http::preventStrayRequests();
         Http::fake([
-            'api.github.com/users/octocat' => Http::response([]),
-            'api.github.com/users/octocat/repos*' => Http::response([]),
+            'api.github.com/users/Nazwarrrr' => Http::response([]),
+            'api.github.com/users/Nazwarrrr/repos*' => Http::response([]),
         ]);
 
         $response = $this->get('/');

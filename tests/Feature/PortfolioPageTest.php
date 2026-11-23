@@ -18,7 +18,7 @@ class PortfolioPageTest extends TestCase
     {
         $this->fakeGithubApi(
             repositories: [[
-                'html_url' => 'https://github.com/octocat/example',
+                'html_url' => 'https://github.com/Nazwarrrr/example',
                 'name' => 'example',
                 'stargazers_count' => 12,
                 'description' => 'Example repository',
@@ -116,8 +116,8 @@ class PortfolioPageTest extends TestCase
     {
         Http::preventStrayRequests();
         Http::fake([
-            'api.github.com/users/octocat' => Http::response([], 503),
-            'api.github.com/users/octocat/repos*' => Http::response([], 503),
+            'api.github.com/users/Nazwarrrr' => Http::response([], 503),
+            'api.github.com/users/Nazwarrrr/repos*' => Http::response([], 503),
         ]);
 
         $response = $this->get(route('home'));
@@ -153,6 +153,63 @@ class PortfolioPageTest extends TestCase
         $this->assertDatabaseCount('projects', 3);
     }
 
+    public function test_project_detail_page_renders_successfully(): void
+    {
+        $category = Category::create(['name' => 'Web Development', 'slug' => 'web-development']);
+        $project = Project::create([
+            'category_id' => $category->id,
+            'title' => 'EduCore Platform',
+            'description' => 'Comprehensive school management system.',
+            'tech_stack' => 'Laravel, MySQL',
+            'demo_url' => 'https://educore.example.com',
+        ]);
+
+        $response = $this->get(route('projects.show', $project));
+
+        $response->assertOk()
+            ->assertSee('EduCore Platform')
+            ->assertSee('Web Development')
+            ->assertSee('https://educore.example.com');
+    }
+
+    public function test_admin_can_create_and_delete_category(): void
+    {
+        $admin = User::factory()->create();
+
+        $createResponse = $this->actingAs($admin)->post(route('admin.categories.store'), [
+            'name' => 'Machine Learning',
+        ]);
+
+        $createResponse->assertRedirect(route('admin.projects.index'))
+            ->assertSessionHas('success');
+        $this->assertDatabaseHas('categories', ['name' => 'Machine Learning', 'slug' => 'machine-learning']);
+
+        $category = Category::where('slug', 'machine-learning')->first();
+        $deleteResponse = $this->actingAs($admin)->delete(route('admin.categories.destroy', $category));
+
+        $deleteResponse->assertRedirect(route('admin.projects.index'))
+            ->assertSessionHas('success');
+        $this->assertDatabaseMissing('categories', ['name' => 'Machine Learning']);
+    }
+
+    public function test_admin_cannot_delete_category_with_projects(): void
+    {
+        $admin = User::factory()->create();
+        $category = Category::create(['name' => 'Robotics', 'slug' => 'robotics']);
+        Project::create([
+            'category_id' => $category->id,
+            'title' => 'RoboArm',
+            'description' => 'Robotic arm controller.',
+            'tech_stack' => 'ESP32, C++',
+        ]);
+
+        $response = $this->actingAs($admin)->delete(route('admin.categories.destroy', $category));
+
+        $response->assertRedirect(route('admin.projects.index'))
+            ->assertSessionHas('error');
+        $this->assertDatabaseHas('categories', ['id' => $category->id]);
+    }
+
     /**
      * @param  array<string, mixed>|null  $profile
      * @param  array<int, array<string, mixed>>  $repositories
@@ -161,15 +218,15 @@ class PortfolioPageTest extends TestCase
     {
         Http::preventStrayRequests();
         Http::fake([
-            'api.github.com/users/octocat' => Http::response($profile ?? [
+            'api.github.com/users/Nazwarrrr' => Http::response($profile ?? [
                 'avatar_url' => 'https://avatars.githubusercontent.com/u/583231',
-                'name' => 'The Octocat',
-                'login' => 'octocat',
-                'bio' => 'GitHub mascot',
+                'name' => 'Nazwar',
+                'login' => 'Nazwarrrr',
+                'bio' => 'Full-Stack Web & IoT Developer',
                 'public_repos' => 8,
                 'followers' => 100,
             ]),
-            'api.github.com/users/octocat/repos*' => Http::response($repositories),
+            'api.github.com/users/Nazwarrrr/repos*' => Http::response($repositories),
         ]);
     }
 }

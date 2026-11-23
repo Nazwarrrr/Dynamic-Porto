@@ -9,6 +9,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -27,42 +28,70 @@ class PortfolioController extends Controller
             ->latest()
             ->get();
 
-        $githubUsername = config('services.github.username', 'octocat');
-        $githubProfile = null;
-        $githubRepos = [];
+        $githubUsername = config('services.github.username', 'Nazwarrrr');
+        $cacheKey = 'github_portfolio_'.$githubUsername;
+        $githubData = Cache::get($cacheKey);
 
-        try {
-            $profileResponse = Http::connectTimeout(3)
-                ->timeout(5)
-                ->get("https://api.github.com/users/{$githubUsername}");
-            $reposResponse = Http::connectTimeout(3)
-                ->timeout(5)
-                ->get("https://api.github.com/users/{$githubUsername}/repos", [
-                    'sort' => 'updated',
-                    'per_page' => 4,
-                ]);
+        if (! is_array($githubData) || empty($githubData['profile'])) {
+            $profile = null;
+            $repos = [];
 
-            if ($profileResponse->successful() && is_array($profileResponse->json())) {
-                $githubProfile = $profileResponse->json();
-            }
-            if ($reposResponse->successful() && is_array($reposResponse->json())) {
-                $githubRepos = $reposResponse->json();
-            }
-            if (! $profileResponse->successful() || ! $reposResponse->successful()) {
-                Log::warning('GitHub API returned an unsuccessful response.', [
+            try {
+                $profileResponse = Http::connectTimeout(3)
+                    ->timeout(5)
+                    ->get("https://api.github.com/users/{$githubUsername}");
+                $reposResponse = Http::connectTimeout(3)
+                    ->timeout(5)
+                    ->get("https://api.github.com/users/{$githubUsername}/repos", [
+                        'sort' => 'updated',
+                        'per_page' => 4,
+                    ]);
+
+                if ($profileResponse->successful() && is_array($profileResponse->json())) {
+                    $profile = $profileResponse->json();
+                }
+                if ($reposResponse->successful() && is_array($reposResponse->json())) {
+                    $repos = $reposResponse->json();
+                }
+                if (! $profileResponse->successful() || ! $reposResponse->successful()) {
+                    Log::warning('GitHub API returned an unsuccessful response.', [
+                        'username' => $githubUsername,
+                        'profile_status' => $profileResponse->status(),
+                        'repositories_status' => $reposResponse->status(),
+                    ]);
+                }
+            } catch (ConnectionException $exception) {
+                Log::warning('Unable to connect to the GitHub API.', [
                     'username' => $githubUsername,
-                    'profile_status' => $profileResponse->status(),
-                    'repositories_status' => $reposResponse->status(),
+                    'exception' => $exception->getMessage(),
                 ]);
             }
-        } catch (ConnectionException $exception) {
-            Log::warning('Unable to connect to the GitHub API.', [
-                'username' => $githubUsername,
-                'exception' => $exception->getMessage(),
-            ]);
+
+            if ($profile !== null) {
+                $githubData = [
+                    'profile' => $profile,
+                    'repos' => $repos,
+                ];
+                Cache::put($cacheKey, $githubData, 1800);
+            } else {
+                $githubData = [
+                    'profile' => null,
+                    'repos' => [],
+                ];
+            }
         }
 
+        $githubProfile = $githubData['profile'] ?? null;
+        $githubRepos = $githubData['repos'] ?? [];
+
         return view('welcome', compact('categories', 'projects', 'githubProfile', 'githubRepos', 'githubUsername'));
+    }
+
+    public function show(Project $project): View
+    {
+        $project->load('category');
+
+        return view('projects.show', compact('project'));
     }
 
     public function storeMessage(Request $request): RedirectResponse
@@ -75,6 +104,6 @@ class PortfolioController extends Controller
 
         Message::create($validated);
 
-        return back()->with('success', 'Pesan berhasil terkirim ke database!');
+        return back()->with('success', 'Pesan Anda berhasil dikirim ke database! Terima kasih telah menghubungi Nazwar.');
     }
 }

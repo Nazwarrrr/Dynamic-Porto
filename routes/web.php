@@ -8,7 +8,10 @@ use Illuminate\Support\Facades\Route;
 
 // Halaman Publik
 Route::get('/', [PortfolioController::class, 'index'])->name('home');
-Route::post('/contact', [PortfolioController::class, 'storeMessage'])->name('contact.store');
+Route::get('/projects/{project}', [PortfolioController::class, 'show'])->name('projects.show');
+Route::post('/contact', [PortfolioController::class, 'storeMessage'])
+    ->middleware('throttle:5,1')
+    ->name('contact.store');
 
 // Autentikasi Login & Logout
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -22,10 +25,14 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::get('/projects/{project}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
     Route::put('/projects/{project}', [ProjectController::class, 'update'])->name('projects.update');
     Route::delete('/projects/{project}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+
+    Route::post('/categories', [ProjectController::class, 'storeCategory'])->name('categories.store');
+    Route::delete('/categories/{category}', [ProjectController::class, 'destroyCategory'])->name('categories.destroy');
+
     Route::delete('/messages/{message}', [ProjectController::class, 'destroyMessage'])->name('messages.destroy');
 });
 
-// LEVEL 6: Endpoint Public API JSON (Bisa langsung dicek guru di browser / Postman)
+// LEVEL 6: Endpoint Public API JSON
 Route::get('/api/projects', function () {
     return response()->json([
         'status' => 'success',

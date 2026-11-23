@@ -9,13 +9,14 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
     public function index(): View
     {
         $projects = Project::with('category')->latest()->get();
-        $categories = Category::all();
+        $categories = Category::withCount('projects')->get();
         $messages = Message::latest()->get();
 
         return view('admin.dashboard', compact('projects', 'categories', 'messages'));
@@ -84,6 +85,39 @@ class ProjectController extends Controller
         $project->delete();
 
         return redirect()->route('admin.projects.index')->with('success', 'Proyek berhasil dihapus!');
+    }
+
+    public function storeCategory(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:100|unique:categories,name',
+        ]);
+
+        $baseSlug = Str::slug($validated['name']);
+        $slug = $baseSlug;
+        $counter = 1;
+        while (Category::where('slug', $slug)->exists()) {
+            $slug = $baseSlug.'-'.$counter;
+            $counter++;
+        }
+
+        Category::create([
+            'name' => $validated['name'],
+            'slug' => $slug,
+        ]);
+
+        return redirect()->route('admin.projects.index')->with('success', 'Kategori baru berhasil ditambahkan!');
+    }
+
+    public function destroyCategory(Category $category): RedirectResponse
+    {
+        if ($category->projects()->exists()) {
+            return redirect()->route('admin.projects.index')->with('error', 'Kategori tidak dapat dihapus karena masih digunakan oleh proyek!');
+        }
+
+        $category->delete();
+
+        return redirect()->route('admin.projects.index')->with('success', 'Kategori berhasil dihapus!');
     }
 
     public function destroyMessage(Message $message): RedirectResponse

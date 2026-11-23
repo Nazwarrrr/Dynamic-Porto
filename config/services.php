@@ -36,7 +36,7 @@ return [
     ],
 
     'github' => [
-        'username' => env('GITHUB_USERNAME', 'octocat'),
+        'username' => env('GITHUB_USERNAME', 'Nazwarrrr'),
     ],
 
 ];
