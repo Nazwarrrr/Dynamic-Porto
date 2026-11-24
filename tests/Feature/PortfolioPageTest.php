@@ -32,8 +32,35 @@ class PortfolioPageTest extends TestCase
             ->assertSee('id="skills"', false)
             ->assertSee('id="contact"', false)
             ->assertSee(route('contact.store'), false)
+            ->assertSee('href="mailto:nazwarmakarim818@gmail.com"', false)
+            ->assertSee('href="https://wa.me/6289509306601?text=Halo%20Nazwar,%20saya%20tertarik%20dengan%20portofolio%20Anda"', false)
             ->assertSee('Example repository')
             ->assertSee('example');
+    }
+
+    public function test_homepage_renders_project_fallback_and_hides_empty_categories(): void
+    {
+        $this->fakeGithubApi();
+        $iotCategory = Category::create(['name' => 'IoT & Robotics', 'slug' => 'iot-robotics']);
+        Category::create(['name' => 'Mobile App', 'slug' => 'mobile-app']);
+        Project::create([
+            'category_id' => $iotCategory->id,
+            'title' => 'WALL-Z',
+            'description' => 'Assistive smart vest and watch.',
+            'tech_stack' => 'ESP32, C++',
+            'image' => null,
+        ]);
+
+        $response = $this->get(route('home'));
+
+        $response->assertOk()
+            ->assertSee('project-placeholder', false)
+            ->assertSee('aspect-video', false)
+            ->assertSee('WALL-Z')
+            ->assertSee('data-copy-value="nazwarmakarim818@gmail.com"', false)
+            ->assertSee('data-copy-value="+62 895-0930-6601"', false)
+            ->assertSee('<em class="text-cyan-300 not-italic font-medium">Unit & Feature Testing</em>', false)
+            ->assertDontSee('Mobile App');
     }
 
     public function test_homepage_filters_projects_by_category(): void
@@ -79,6 +106,31 @@ class PortfolioPageTest extends TestCase
         $response->assertOk()
             ->assertDontSee('href="#"', false)
             ->assertDontSee('href="https://github.com"', false);
+    }
+
+    public function test_project_card_shows_live_and_github_actions_when_links_exist(): void
+    {
+        $this->fakeGithubApi();
+        $category = Category::create(['name' => 'Web Development', 'slug' => 'web-development']);
+        Project::create([
+            'category_id' => $category->id,
+            'title' => 'Linked project',
+            'description' => 'A project with external links.',
+            'tech_stack' => 'Laravel',
+            'demo_url' => 'https://demo.example.com',
+            'github_url' => 'https://github.com/Nazwarrrr/linked-project',
+        ]);
+
+        $response = $this->get(route('home'));
+
+        $response->assertOk()
+            ->assertSee('href="https://demo.example.com"', false)
+            ->assertSee('aria-label="Buka Live Demo Linked project"', false)
+            ->assertSee('data-lucide="external-link"', false)
+            ->assertSee('href="https://github.com/Nazwarrrr/linked-project"', false)
+            ->assertSee('aria-label="Buka GitHub Linked project"', false)
+            ->assertSee('class="github-mark h-3.5 w-3.5 shrink-0 fill-current"', false)
+            ->assertSee('>Repo</span>', false);
     }
 
     public function test_contact_form_stores_a_valid_message(): void
