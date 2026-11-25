@@ -6,7 +6,7 @@
 
     <!-- Sticky Glass Navbar with Scroll-Spy & Mobile Menu -->
     <header x-data="{ scrolled: window.pageYOffset > 20 }" @scroll.window="scrolled = window.pageYOffset > 20" class="sticky top-0 z-50 border-b border-transparent px-4 transition-all duration-300">
-        <nav :class="scrolled ? 'bg-slate-950/90 dark:bg-slate-950/90 backdrop-blur-xl shadow-lg shadow-black/20 border-white/15' : 'bg-transparent border-transparent'" class="max-w-6xl mx-auto rounded-b-2xl border px-5 py-3.5 flex items-center justify-between transition-all duration-300">
+        <nav :class="scrolled ? 'bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl shadow-lg shadow-slate-900/10 dark:shadow-black/20 border-slate-200/80 dark:border-white/15' : 'bg-transparent border-transparent'" class="max-w-6xl mx-auto rounded-b-2xl border px-5 py-3.5 flex items-center justify-between transition-all duration-300">
             <!-- Brand Logo -->
             <a href="{{ route('home') }}" class="font-mono font-bold text-lg tracking-tight flex items-center gap-2 group">
                 <span class="w-2.5 h-2.5 rounded-full bg-teal-500 dark:bg-cyanGlow animate-pulse"></span>
@@ -156,7 +156,7 @@
                                     <p class="text-xs font-mono text-teal-600 dark:text-cyanGlow">SMKN 1 Garut — PPLG</p>
                                 </div>
                             </div>
-                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-mono">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-mono">
                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Active
                             </span>
                         </div>
