@@ -1,58 +1,225 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# ⚡ Dynamic-Porto — Full-Stack Portfolio & Control System
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://img.shields.io/badge/PHP-8.4-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP 8.4" />
+  <img src="https://img.shields.io/badge/Laravel-12-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel 12" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS v4" />
+  <img src="https://img.shields.io/badge/Alpine.js-3.17-8BC0D0?style=for-the-badge&logo=alpinedotjs&logoColor=white" alt="Alpine.js" />
+  <img src="https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" />
+  <img src="https://img.shields.io/badge/Railway-Production-0B0D0E?style=for-the-badge&logo=railway&logoColor=white" alt="Railway" />
+  <img src="https://img.shields.io/badge/Tests-15%20Passed-success?style=for-the-badge&logo=checkmarx&logoColor=white" alt="Tests Passed" />
 </p>
 
-## About Laravel
+<p align="center">
+  <strong>Dynamic-Porto</strong> adalah platform portofolio interaktif dinamis dan sistem kontrol admin berbasis monolitik modern yang dirancang khusus untuk memamerkan proyek, spesialisasi teknologi, dan aktivitas rekayasa perangkat lunak milik <strong>Nazwar Makarim Mahardhika</strong> (Siswa XI RPL 2 SMKN 1 Garut).
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center">
+  🌐 <strong>Production Live Demo:</strong> <a href="https://dynamic-porto-production.up.railway.app/">https://dynamic-porto-production.up.railway.app/</a><br>
+  📦 <strong>GitHub Repository:</strong> <a href="https://github.com/Nazwarrrr/Dynamic-Porto">https://github.com/Nazwarrrr/Dynamic-Porto</a>
+</p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 🎯 Fitur Unggulan
 
-## Learning Laravel
+### 1. 🚀 Cyber-Dev Micro Boot Loader
+* Inisialisasi visual berkonsep *developer booting telemetry* (`NMM KERNEL INIT`) berkecepatan tinggi (~0.9 detik) saat website pertama kali diakses.
+* Dilengkapi *Smart Session Cache* (`sessionStorage`) sehingga animasi tidak berulang saat refresh atau berpindah halaman (*zero UX annoyance*).
+* Otomatis di-bypass pada area autentikasi dan dashboard admin.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 2. 🍱 Bento Grid Layout & Theme Engine
+* Layout asimetris bergaya **Bento Grid** responsif yang mengelompokkan keahlian inti: *Backend Architecture*, *IoT & Robotics Telemetry*, *Database & DevOps*, serta *Frontend Interface*.
+* Dilengkapi *Instant Dark/Light Mode Switcher* dengan script anti-flicker dan efek visual *ambient dot-grid backdrop*.
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 3. ⚡ Client-Side Instant Category Filtering
+* Filter kategori proyek dinamis tanpa reload halaman (*no page reload*) berbasis **Alpine.js** dan DOM *data-attributes*.
+* Transisi visual instan (*scale & fade*) dengan dukungan *empty state alert*.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+### 4. 📖 Dedicated Case Study Pages
+* Halaman rincian studi kasus mendalam (`/projects/{id}`) untuk setiap proyek: breadcrumbs, preview media, tantangan arsitektural, solusi, *tech stack pills*, serta tombol eksternal ke repositori kode dan demo aplikasi.
 
-## Agentic Development
+### 5. 🔒 Protected Admin Panel & Full CRUD
+* Rute panel admin terisolasi (`/admin/projects`) dilindungi oleh **Laravel Authentication Middleware (`auth`)**.
+* Operasi **CRUD Lengkap**:
+  * Manajemen proyek (Tambah, Edit, Hapus, dan Listing).
+  * Manajemen kategori dengan proteksi integritas data (*foreign key safety check*).
+  * Inbox pesan masuk dari formulir kontak.
+* **Manajemen File Storage Aman**: Upload gambar otomatis ke `storage/app/public` dan penghapusan otomatis gambar lama dari server saat data diupdate atau dihapus.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### 6. 🌐 Konsumsi & Penyediaan REST API
+* **Konsumsi GitHub API:** Mengintegrasikan REST API GitHub untuk menampilkan profil, bio, dan 4 repositori publik teranyar secara real-time dengan layer caching server-side 30 menit (`Cache::put`).
+* **Penyediaan Public JSON Endpoint:** Menyediakan endpoint publik `GET /api/projects` untuk konsumsi pihak ketiga berformat JSON standar.
+* **Proteksi Rate Limiting:** Form kontak diproteksi pembatasan kuota `throttle:5,1` (maksimal 5 request per menit per alamat IP) untuk mencegah spam bot.
 
-```bash
-composer require laravel/boost --dev
+---
 
-php artisan boost:install
+## 🏗️ Arsitektur & Teknologi
+
+| Layer | Teknologi & Tools | Keterangan |
+| :--- | :--- | :--- |
+| **Backend Core** | PHP 8.4 · Laravel 12 | Monolith MVC, Eloquent ORM, Dependency Injection, Validation |
+| **Frontend UI** | Tailwind CSS v4 · Alpine.js v3.17 | Modern `@theme` CSS Variables, Vite 8, Lucide Icons |
+| **Database** | MySQL (Cloud Instance) | Relasi 1-to-N (`categories` ➜ `projects`), cascading deletes |
+| **DevOps & Cloud** | Docker · Railway PaaS | Multi-stage build (`node:22-alpine` & `php:8.4-cli`), SSL Enforced |
+| **Testing** | PHPUnit 12 | 15 Feature & Unit test case, 63 assertions passing |
+
+---
+
+## 🗄️ Skema Database Relasional
+
+```
+  +------------------+         1 : N         +-------------------+
+  |    categories    |-----------------------<     projects      |
+  +------------------+                       +-------------------+
+  | id (PK)          |                       | id (PK)           |
+  | name             |                       | category_id (FK)  |
+  | slug (Unique)    |                       | title             |
+  | created_at       |                       | description       |
+  | updated_at       |                       | tech_stack        |
+  +------------------+                       | demo_url          |
+                                             | github_url        |
+  +------------------+                       | image             |
+  |     messages     |                       | created_at        |
+  +------------------+                       | updated_at        |
+  | id (PK)          |                       +-------------------+
+  | sender_name      |
+  | sender_email     |                       +-------------------+
+  | message          |                       |       users       |
+  | created_at       |                       +-------------------+
+  | updated_at       |                       | id, name, email.. |
+  +------------------+                       +-------------------+
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## 🚀 Panduan Menjalankan di Lokal (Local Development)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 1. Prasyarat
+* PHP >= 8.3 / 8.4
+* Composer >= 2.x
+* Node.js >= 20.x & npm
+* MySQL Database
 
-## Code of Conduct
+### 2. Langkah Instalasi
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+# 1. Clone repository
+git clone https://github.com/Nazwarrrr/Dynamic-Porto.git
+cd Dynamic-Porto
 
-## Security Vulnerabilities
+# 2. Install dependensi backend & frontend
+composer install
+npm install
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# 3. Konfigurasi Environment File
+cp .env.example .env
+php artisan key:generate
 
-## License
+# 4. Atur koneksi database di file .env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=dynamic_porto
+DB_USERNAME=root
+DB_PASSWORD=
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# 5. Jalankan migrasi dan seeder database
+php artisan migrate:fresh --seed
+
+# 6. Buat symbolic link storage
+php artisan storage:link
+
+# 7. Build aset frontend & jalankan server
+npm run dev
+php artisan serve
+```
+
+Aplikasi dapat diakses melalui browser di: `http://localhost:8000`
+
+### 🔑 Kredensial Default Admin Panel:
+* **URL:** `http://localhost:8000/login`
+* **Email:** `admin@nazwar.dev`
+* **Password:** `password123`
+
+---
+
+## 🧪 Pengujian Otomatis (Automated Testing)
+
+Proyek ini dilengkapi rangkaian pengujian otomatis (*Feature Tests*) untuk memastikan keandalan alur bisnis, validasi input, fungsionalitas seeder, dan integrasi API:
+
+```bash
+php artisan test
+```
+
+**Hasil Pengujian:**
+```text
+   PASS  Tests\Unit\ExampleTest
+   PASS  Tests\Feature\ExampleTest
+   PASS  Tests\Feature\PortfolioPageTest
+  ✓ homepage renders navigation targets and github activity
+  ✓ homepage renders project fallback and hides empty categories
+  ✓ homepage filters projects by category
+  ✓ homepage does not render placeholder project links
+  ✓ project card shows live and github actions when links exist
+  ✓ contact form stores a valid message
+  ✓ contact form rejects an invalid email without storing a message
+  ✓ homepage still renders when github is unavailable
+  ✓ project creation rejects non http urls
+  ✓ database seeder can run more than once
+  ✓ project detail page renders successfully
+  ✓ admin can create and delete category
+  ✓ admin cannot delete category with projects
+
+  Tests:    15 passed (63 assertions)
+  Duration: 1.02s
+```
+
+---
+
+## 🐳 Konfigurasi Deployment Docker & Railway
+
+Aplikasi dipaketkan ke dalam image container menggunakan strategi **Multi-Stage Build** pada [Dockerfile](file:///c:/laragon/www/Dynamic-portofolio/Dockerfile):
+
+```dockerfile
+# Stage 1: Build Frontend Assets
+FROM node:22-alpine AS frontend
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+COPY resources ./resources
+COPY public ./public
+COPY vite.config.js ./
+RUN npm run build && test -f public/build/manifest.json
+
+# Stage 2: Production PHP Runtime
+FROM php:8.4-cli
+RUN apt-get update && apt-get install -y \
+    git unzip libzip-dev libpng-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+WORKDIR /app
+COPY . .
+COPY --from=frontend /app/public/build ./public/build
+RUN composer install --no-dev --optimize-autoloader \
+    && php artisan storage:link
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
+```
+
+Enforce skema HTTPS diterapkan secara otomatis pada environment production di `app/Providers/AppServiceProvider.php` demi standar keamanan web modern.
+
+---
+
+## 👤 Pengembang
+
+**Nazwar Makarim Mahardhika**
+* 🏫 Siswa XI RPL 2 — SMKN 1 Garut (Rekayasa Perangkat Lunak / PPLG)
+* 💼 Minat & Fokus: Full-Stack Web Development, IoT & Embedded Robotics
+* 🌐 GitHub: [@Nazwarrrr](https://github.com/Nazwarrrr)
+* ✉️ Email: [nazwarmakarim818@gmail.com](mailto:nazwarmakarim818@gmail.com)
+
+---
+
+## 📄 Lisensi
+
+Proyek ini dirilis di bawah lisensi terbuka [MIT License](LICENSE).
