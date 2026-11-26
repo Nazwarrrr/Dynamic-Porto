@@ -133,7 +133,7 @@ php artisan serve
 Aplikasi dapat diakses melalui browser di: `http://localhost:8000`
 
 ### 🔑 Akun Admin Panel
-Atur `ADMIN_EMAIL` dan `ADMIN_PASSWORD` di file `.env` sebelum menjalankan `php artisan db:seed` (di environment production, `ADMIN_PASSWORD` wajib diisi).
+Atur `ADMIN_EMAIL` dan `ADMIN_PASSWORD` di file `.env` sebelum menjalankan `php artisan db:seed`. Pada deployment Docker/Railway, atur keduanya sebagai environment variables/secrets di platform; container akan menyinkronkan satu akun admin setelah migrasi. Jika hanya satu variabel yang diatur, proses start akan gagal; jika keduanya tidak diatur, kredensial tidak disinkronkan. Jangan commit nilai `ADMIN_PASSWORD`; gunakan password kuat dan unik.
 
 Login tersedia melalui `http://localhost:8000/login` dengan proteksi rate limiting (maksimal 5 percobaan per menit).
 
