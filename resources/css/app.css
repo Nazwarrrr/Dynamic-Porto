@@ -1,34 +1,25 @@
 @import 'tailwindcss';
-
 @source '../views/**/*.blade.php';
 @source '../js/**/*.js';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
-
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Palet: papan sirkuit. Hijau solder-mask, tembaga sebagai satu-satunya aksen. */
 :root {
-    --bg: #fafaf7;
-    --surface: #ffffff;
-    --line: #e7e5e0;
-    --ink: #1c1917;
-    --muted: #57534e;
-    --accent: #0f766e;
-    --accent-fg: #ffffff;
+    --bg: #F2F4EF; --surface: #FFFFFF; --line: #D5DBD2;
+    --ink: #0F1E18; --muted: #4F5E56;
+    --accent: #9A5B1E; --accent-fg: #FFFFFF;
+    --ease: cubic-bezier(.16, 1, .3, 1);
+    color-scheme: light;
 }
-
 .dark {
-    --bg: #0c0f14;
-    --surface: #12161d;
-    --line: #222833;
-    --ink: #e7e9ee;
-    --muted: #9aa3b2;
-    --accent: #5eead4;
-    --accent-fg: #06201d;
+    --bg: #0A1713; --surface: #10241D; --line: #1F3A30;
+    --ink: #E9F0EA; --muted: #93A89D;
+    --accent: #E8A862; --accent-fg: #1A0F02;
+    color-scheme: dark;
 }
 
 @theme inline {
-    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
-    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
     --color-bg: var(--bg);
     --color-surface: var(--surface);
     --color-line: var(--line);
@@ -38,26 +29,85 @@
     --color-accent-fg: var(--accent-fg);
 }
 
-html {
-    overflow-x: clip;
-    scroll-behavior: smooth;
+@theme {
+    --font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 }
+
+@view-transition { navigation: auto; }
+::view-transition-group(*) { animation-duration: .6s; animation-timing-function: var(--ease); }
+
+html { scroll-behavior: smooth; overflow-x: clip; }
+::selection { background: var(--accent); color: var(--accent-fg); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+[x-cloak] { display: none !important; }
+
+/* Navigasi */
+#site-nav { border-bottom: 1px solid transparent; transition: background-color .3s, border-color .3s; }
+#site-nav[data-scrolled='true'] {
+    background: color-mix(in oklab, var(--bg) 86%, transparent);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border-color: var(--line);
+}
+
+/* Satu rangkaian animasi saat halaman dimuat: baris judul naik dari balik topeng */
+.line { display: block; overflow: hidden; padding-bottom: .1em; margin-bottom: -.1em; }
+.line > span {
+    display: block; transform: translateY(105%);
+    animation: line-up 1.1s var(--ease) forwards;
+    animation-delay: calc(var(--i, 0) * 110ms + 200ms);
+}
+.fade {
+    opacity: 0; animation: fade-in 1s var(--ease) forwards;
+    animation-delay: calc(var(--i, 0) * 110ms + 200ms);
+}
+@keyframes line-up { to { transform: translateY(0); } }
+@keyframes fade-in { to { opacity: 1; } }
+@keyframes toast-in {
+    from { opacity: 0; transform: translate(-50%, 16px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
+.toast { animation: toast-in .6s var(--ease) both; }
+
+/* Komponen kecil */
+.ulink {
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: background-size .4s var(--ease), color .2s;
+}
+.ulink:hover, .group:hover .ulink { background-size: 100% 1px; }
+.btn {
+    display: inline-flex; align-items: center; gap: .5rem; border-radius: .25rem;
+    background: var(--accent); color: var(--accent-fg);
+    padding: .85rem 1.4rem; font-size: .95rem; font-weight: 600;
+    transition: filter .2s, transform .2s;
+}
+.btn:hover { filter: brightness(1.1); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: .6; cursor: progress; }
+.field {
+    display: block; width: 100%; margin-top: .25rem; border: 0; border-radius: 0;
+    border-bottom: 1px solid var(--line); background: transparent; color: var(--ink);
+    padding: .75rem 0; font-size: 1rem; transition: border-color .2s, box-shadow .2s;
+}
+.field:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 1px 0 var(--accent); }
+.input-box {
+    display: block; width: 100%; margin-top: .35rem; border-radius: .25rem;
+    border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+    padding: .65rem .85rem; font-size: .925rem; transition: border-color .2s, box-shadow .2s;
+}
+.input-box:focus-visible { outline: none; border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.pattern {
+    background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 28px 28px;
+}
+
+@media (hover: none) { #sonar-hint { display: none; } }
 
 @media (prefers-reduced-motion: reduce) {
-    html {
-        scroll-behavior: auto;
-    }
-}
-
-[x-cloak] {
-    display: none !important;
-}
-
-.no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-.no-scrollbar::-webkit-scrollbar {
-    display: none;
+    html { scroll-behavior: auto; }
+    .line > span, .fade, .toast { animation: none; opacity: 1; transform: none; }
+    .toast { transform: translateX(-50%); }
+    ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }

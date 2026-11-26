@@ -196,12 +196,32 @@ class PortfolioPageTest extends TestCase
 
     public function test_database_seeder_can_run_more_than_once(): void
     {
+        $this->fakeGithubApi();
         $this->seed(DatabaseSeeder::class);
+        Project::query()
+            ->whereIn('title', [
+                'BagiRasa — Community Food Rescue',
+                'JejakHijau — Carbon Footprint Tracker',
+            ])
+            ->update(['github_url' => 'https://github.com']);
         $this->seed(DatabaseSeeder::class);
 
         $this->assertDatabaseCount('users', 1);
         $this->assertDatabaseCount('categories', 3);
         $this->assertDatabaseCount('projects', 3);
+        $this->assertDatabaseHas('projects', [
+            'title' => 'BagiRasa — Community Food Rescue',
+            'github_url' => 'https://github.com/Nazwarrrr/Bagi-Rasa',
+        ]);
+        $this->assertDatabaseHas('projects', [
+            'title' => 'JejakHijau — Carbon Footprint Tracker',
+            'github_url' => 'https://github.com/Nazwarrrr/Jejak-Hijau',
+        ]);
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('href="https://github.com/Nazwarrrr/Bagi-Rasa"', false)
+            ->assertSee('href="https://github.com/Nazwarrrr/Jejak-Hijau"', false);
     }
 
     public function test_project_detail_page_renders_successfully(): void
