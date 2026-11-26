@@ -39,7 +39,8 @@
 @view-transition { navigation: auto; }
 ::view-transition-group(*) { animation-duration: .6s; animation-timing-function: var(--ease); }
 
-html { scroll-behavior: smooth; overflow-x: clip; }
+html { scroll-behavior: smooth; overflow-x: clip; scrollbar-width: none; }
+html::-webkit-scrollbar { display: none; }
 ::selection { background: var(--accent); color: var(--accent-fg); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 [x-cloak] { display: none !important; }
