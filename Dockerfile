@@ -1,27 +1,29 @@
-FROM node:22-alpine AS frontend
-
+FROM node:22-alpine AS assets
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
-
+COPY vite.config.js ./
 COPY resources ./resources
 COPY public ./public
-COPY vite.config.js ./
 RUN npm run build && test -f public/build/manifest.json
 
-FROM php:8.4-cli
-
-RUN apt-get update && apt-get install -y \
-    git unzip libzip-dev libpng-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd
-
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
+FROM composer:2 AS vendor
 WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --no-interaction
 COPY . .
-COPY --from=frontend /app/public/build ./public/build
+RUN composer dump-autoload --optimize --no-dev
 
-RUN composer install --no-dev --optimize-autoloader \
-    && php artisan storage:link
-
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
+FROM php:8.4-cli
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libzip-dev libpng-dev libjpeg-dev libwebp-dev libonig-dev \
+    && docker-php-ext-configure gd --with-jpeg --with-webp \
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath gd opcache \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+COPY --from=vendor /app ./
+COPY --from=assets /app/public/build ./public/build
+COPY docker/start.sh /usr/local/bin/start
+RUN sed -i 's/\r$//' /usr/local/bin/start && chmod +x /usr/local/bin/start
+ENV PHP_CLI_SERVER_WORKERS=4
+CMD ["start"]

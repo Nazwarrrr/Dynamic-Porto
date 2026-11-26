@@ -70,7 +70,7 @@
                         @if($project->image)
                             <div id="current-image-preview">
                                 <span class="text-[10px] font-mono text-slate-400 block mb-1">Foto Saat Ini:</span>
-                                <img src="{{ asset('storage/' . $project->image) }}" alt="Current Image" class="h-16 rounded-lg object-cover border border-white/10">
+                                <img src="{{ asset('storage/' . $project->image) }}" alt="Current Image" onerror="this.style.display='none'" class="h-16 rounded-lg object-cover border border-white/10">
                             </div>
                         @endif
                         <div id="new-image-preview-wrapper" class="hidden">

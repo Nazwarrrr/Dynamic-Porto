@@ -55,11 +55,11 @@ class PortfolioPageTest extends TestCase
 
         $response->assertOk()
             ->assertSee('project-placeholder', false)
-            ->assertSee('aspect-video', false)
+            ->assertSee('aspect-[16/10]', false)
             ->assertSee('WALL-Z')
             ->assertSee('data-copy-value="nazwarmakarim818@gmail.com"', false)
             ->assertSee('data-copy-value="+62 895-0930-6601"', false)
-            ->assertSee('<em class="text-cyan-300 not-italic font-medium">Unit & Feature Testing</em>', false)
+            ->assertSee('Unit &amp; Feature Testing', false)
             ->assertDontSee('Mobile App');
     }
 
@@ -126,11 +126,10 @@ class PortfolioPageTest extends TestCase
         $response->assertOk()
             ->assertSee('href="https://demo.example.com"', false)
             ->assertSee('aria-label="Buka Live Demo Linked project"', false)
-            ->assertSee('data-lucide="external-link"', false)
+            ->assertSee('Demo ↗')
             ->assertSee('href="https://github.com/Nazwarrrr/linked-project"', false)
             ->assertSee('aria-label="Buka GitHub Linked project"', false)
-            ->assertSee('class="github-mark h-3.5 w-3.5 shrink-0 fill-current"', false)
-            ->assertSee('>Repo</span>', false);
+            ->assertSee('Kode ↗');
     }
 
     public function test_contact_form_stores_a_valid_message(): void
@@ -260,6 +259,90 @@ class PortfolioPageTest extends TestCase
         $response->assertRedirect(route('admin.projects.index'))
             ->assertSessionHas('error');
         $this->assertDatabaseHas('categories', ['id' => $category->id]);
+    }
+
+    public function test_login_is_rate_limited_after_five_attempts(): void
+    {
+        for ($i = 0; $i < 5; $i++) {
+            $this->post(route('login.post'), [
+                'email' => 'attacker@example.com',
+                'password' => 'wrong-password',
+            ])->assertSessionHasErrors('email');
+        }
+
+        $this->post(route('login.post'), [
+            'email' => 'attacker@example.com',
+            'password' => 'wrong-password',
+        ])->assertStatus(429);
+    }
+
+    public function test_contact_honeypot_silently_drops_spam(): void
+    {
+        $response = $this->from(route('home'))->post(route('contact.store'), [
+            'sender_name' => 'Bot',
+            'sender_email' => 'bot@example.com',
+            'message' => 'Buy crypto now!',
+            'website' => 'https://spam.example.com',
+        ]);
+
+        $response->assertRedirect(route('home'))
+            ->assertSessionHas('success');
+        $this->assertDatabaseCount('messages', 0);
+    }
+
+    public function test_security_headers_are_present(): void
+    {
+        $this->fakeGithubApi();
+
+        $response = $this->get(route('home'));
+
+        $response->assertHeader('X-Content-Type-Options', 'nosniff')
+            ->assertHeader('X-Frame-Options', 'DENY')
+            ->assertHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+
+        $loginResponse = $this->get(route('login'));
+        $this->assertStringContainsString('no-store', (string) $loginResponse->headers->get('Cache-Control'));
+    }
+
+    public function test_public_api_projects_returns_json(): void
+    {
+        $category = Category::create(['name' => 'Web Development', 'slug' => 'web-development']);
+        Project::create([
+            'category_id' => $category->id,
+            'title' => 'API Project',
+            'description' => 'Exposed via API',
+            'tech_stack' => 'Laravel',
+        ]);
+
+        $response = $this->getJson(route('api.projects'));
+
+        $response->assertOk()
+            ->assertJsonPath('status', 'success')
+            ->assertJsonPath('total', 1)
+            ->assertJsonPath('data.0.title', 'API Project')
+            ->assertJsonPath('data.0.category', 'Web Development');
+    }
+
+    public function test_project_detail_and_admin_dashboard_use_alpine_toggle_theme(): void
+    {
+        $admin = User::factory()->create();
+        $category = Category::create(['name' => 'Web Development', 'slug' => 'web-development']);
+        $project = Project::create([
+            'category_id' => $category->id,
+            'title' => 'Theme Test',
+            'description' => 'Testing theme button',
+            'tech_stack' => 'Laravel',
+        ]);
+
+        $this->get(route('projects.show', $project))
+            ->assertOk()
+            ->assertSee('@click="toggleTheme()"', false)
+            ->assertDontSee('toggleAppTheme');
+
+        $this->actingAs($admin)->get(route('admin.projects.index'))
+            ->assertOk()
+            ->assertSee('@click="toggleTheme()"', false)
+            ->assertDontSee('toggleAppTheme');
     }
 
     /**

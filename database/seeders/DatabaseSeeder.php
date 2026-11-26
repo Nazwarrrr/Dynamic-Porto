@@ -7,16 +7,20 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
+        $password = env('ADMIN_PASSWORD');
+        abort_if(app()->isProduction() && blank($password), 1, 'ADMIN_PASSWORD wajib diisi di production.');
+
         User::firstOrCreate(
-            ['email' => 'admin@nazwar.dev'],
+            ['email' => env('ADMIN_EMAIL', 'admin@example.test')],
             [
                 'name' => 'Nazwar Makarim Mahardhika',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make($password ?? Str::random(32)),
             ],
         );
 

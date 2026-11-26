@@ -23,14 +23,9 @@
 
 ## 🎯 Fitur Unggulan
 
-### 1. 🚀 Cyber-Dev Micro Boot Loader
-* Inisialisasi visual berkonsep *developer booting telemetry* (`NMM KERNEL INIT`) berkecepatan tinggi (~0.9 detik) saat website pertama kali diakses.
-* Dilengkapi *Smart Session Cache* (`sessionStorage`) sehingga animasi tidak berulang saat refresh atau berpindah halaman (*zero UX annoyance*).
-* Otomatis di-bypass pada area autentikasi dan dashboard admin.
-
-### 2. 🍱 Bento Grid Layout & Theme Engine
-* Layout asimetris bergaya **Bento Grid** responsif yang mengelompokkan keahlian inti: *Backend Architecture*, *IoT & Robotics Telemetry*, *Database & DevOps*, serta *Frontend Interface*.
-* Dilengkapi *Instant Dark/Light Mode Switcher* dengan script anti-flicker dan efek visual *ambient dot-grid backdrop*.
+### 1. 🧱 Desain Token & Antarmuka Bersih
+* Sistem warna berbasis CSS custom properties (`--bg`, `--surface`, `--line`, `--ink`, `--accent`) dengan kontras tinggi (WCAG AA) dan dukungan mode gelap/terang otomatis mengikuti preferensi sistem.
+* Tata letak responsif untuk menampilkan proyek, keahlian, pengalaman, dan kontak tanpa gangguan visual berlebih.
 
 ### 3. ⚡ Client-Side Instant Category Filtering
 * Filter kategori proyek dinamis tanpa reload halaman (*no page reload*) berbasis **Alpine.js** dan DOM *data-attributes*.
@@ -137,10 +132,10 @@ php artisan serve
 
 Aplikasi dapat diakses melalui browser di: `http://localhost:8000`
 
-### 🔑 Kredensial Default Admin Panel:
-* **URL:** `http://localhost:8000/login`
-* **Email:** `admin@nazwar.dev`
-* **Password:** `password123`
+### 🔑 Akun Admin Panel
+Atur `ADMIN_EMAIL` dan `ADMIN_PASSWORD` di file `.env` sebelum menjalankan `php artisan db:seed` (di environment production, `ADMIN_PASSWORD` wajib diisi).
+
+Login tersedia melalui `http://localhost:8000/login` dengan proteksi rate limiting (maksimal 5 percobaan per menit).
 
 ---
 

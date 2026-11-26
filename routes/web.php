@@ -3,7 +3,6 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ProjectController;
-use App\Models\Project;
 use Illuminate\Support\Facades\Route;
 
 // Halaman Publik
@@ -15,10 +14,12 @@ Route::post('/contact', [PortfolioController::class, 'storeMessage'])
 
 // Autentikasi Login & Logout
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::post('/login', [AuthController::class, 'login'])
+    ->middleware('throttle:login')
+    ->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// LEVEL 5: Rute Admin Terproteksi Middleware Auth
+// Rute Admin Terproteksi
 Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
     Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
@@ -32,11 +33,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () 
     Route::delete('/messages/{message}', [ProjectController::class, 'destroyMessage'])->name('messages.destroy');
 });
 
-// LEVEL 6: Endpoint Public API JSON
-Route::get('/api/projects', function () {
-    return response()->json([
-        'status' => 'success',
-        'total' => Project::count(),
-        'data' => Project::with('category')->latest()->get(),
-    ]);
-})->name('api.projects');
+// Endpoint JSON Publik
+Route::get('/api/projects', [PortfolioController::class, 'api'])
+    ->middleware('throttle:60,1')
+    ->name('api.projects');

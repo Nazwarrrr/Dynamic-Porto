@@ -14,9 +14,9 @@
                 </span>
             </div>
             <div class="flex items-center gap-3">
-                <button type="button" onclick="toggleAppTheme()" aria-label="Ganti Tema" class="p-1.5 rounded-lg glass text-slate-300 hover:text-cyanGlow transition">
-                    <i data-lucide="sun" class="w-4 h-4 hidden dark:block text-cyanGlow"></i>
-                    <i data-lucide="moon" class="w-4 h-4 block dark:hidden text-slate-700"></i>
+                <button type="button" @click="toggleTheme()" aria-label="Ganti Tema" class="inline-flex items-center justify-center w-11 h-11 rounded-xl border border-white/10 text-slate-300 hover:text-accent transition-colors">
+                    <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+                    <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
                 </button>
                 <a href="{{ route('home') }}" target="_blank" class="text-xs font-mono text-slate-300 hover:text-cyanGlow flex items-center gap-1">
                     <i data-lucide="globe" class="w-3.5 h-3.5"></i>
@@ -94,7 +94,7 @@
             <div class="glass-card rounded-2xl p-5 flex items-center justify-between">
                 <div>
                     <span class="text-xs font-mono text-slate-400 uppercase tracking-wider">Pesan Masuk</span>
-                    <p class="text-3xl font-extrabold text-teal-600 dark:text-cyanGlow mt-1">{{ $messages->count() }}</p>
+                    <p class="text-3xl font-extrabold text-teal-600 dark:text-cyanGlow mt-1">{{ $messages->total() }}</p>
                     <span class="text-[11px] font-mono text-slate-500">Dari formulir kontak</span>
                 </div>
                 <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
@@ -115,7 +115,7 @@
             </button>
             <button type="button" data-tab="tab-messages" class="tab-btn px-4 py-2 rounded-xl font-mono text-xs transition glass hover:border-teal-500/50 dark:hover:border-cyanGlow/50 flex items-center gap-1.5">
                 <i data-lucide="mail" class="w-4 h-4"></i>
-                <span>Pesan Masuk ({{ $messages->count() }})</span>
+                <span>Pesan Masuk ({{ $messages->total() }})</span>
             </button>
         </div>
 
@@ -316,7 +316,7 @@
                 <div class="flex items-center justify-between">
                     <h3 class="text-base font-bold flex items-center gap-2">
                         <i data-lucide="inbox" class="w-4 h-4 text-teal-600 dark:text-cyanGlow"></i>
-                        <span>Pesan Masuk dari Formulir Portofolio ({{ $messages->count() }})</span>
+                        <span>Pesan Masuk dari Formulir Portofolio ({{ $messages->total() }})</span>
                     </h3>
                 </div>
 
@@ -358,6 +358,12 @@
                         </div>
                     @endforelse
                 </div>
+
+                @if($messages->hasPages())
+                    <div class="pt-4">
+                        {{ $messages->links() }}
+                    </div>
+                @endif
             </section>
         </div>
 

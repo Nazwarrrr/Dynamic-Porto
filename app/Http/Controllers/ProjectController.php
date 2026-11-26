@@ -17,7 +17,7 @@ class ProjectController extends Controller
     {
         $projects = Project::with('category')->latest()->get();
         $categories = Category::withCount('projects')->get();
-        $messages = Message::latest()->get();
+        $messages = Message::latest()->paginate(20);
 
         return view('admin.dashboard', compact('projects', 'categories', 'messages'));
     }
@@ -31,7 +31,7 @@ class ProjectController extends Controller
             'tech_stack' => 'required|string|max:200',
             'demo_url' => 'nullable|url:http,https|max:255',
             'github_url' => 'nullable|url:http,https|max:255',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048|dimensions:max_width=4000,max_height=4000',
         ]);
 
         if ($request->hasFile('image')) {
@@ -59,7 +59,7 @@ class ProjectController extends Controller
             'tech_stack' => 'required|string|max:200',
             'demo_url' => 'nullable|url:http,https|max:255',
             'github_url' => 'nullable|url:http,https|max:255',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048|dimensions:max_width=4000,max_height=4000',
         ]);
 
         $previousImage = $project->image;
